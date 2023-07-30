@@ -39,13 +39,17 @@ Run the following command to install project dependencies:
 
 ## Usage
 
-1. Replace database credentials in dataSource file with your credentials
+1. Replace database credentials in dataSource file with your database credentials
 
-2. Run migrations
+2. Run build to generate JavaScript files (dist folder)
 
--npm run migration:run
+- npm run build
 
-3. Run the application using the following command:
+3. Initialize database schema by running migrations
+
+- npm run migration:run
+
+4. Run the application
 
 - npm run start:dev
 

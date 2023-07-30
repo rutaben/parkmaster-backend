@@ -19,11 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     // Configures Jwt strategy options
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      // It must be avoided, but config/.env stopped working before deadline therefore I am passing strings as well
-      secretOrKey:
-        '9736ED2273858792A7775211FE1DC' ||
-        process.env.JWT_SECRET ||
-        jwtSettings.secret,
+      secretOrKey: process.env.JWT_SECRET || jwtSettings.secret,
     });
   }
 

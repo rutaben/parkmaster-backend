@@ -19,16 +19,16 @@ import { VehicleRepository } from './vehicle.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 
 export type s3SettingsProps = {
-  id: string;
   accessKeyId: string;
   secretAccessKey: string;
+  region: string;
   bucketName: string;
 };
 
 const s3Settings: s3SettingsProps = config.get('s3');
 
-@Controller('vehicles')
 // Jwt authentication guard ensures the user with correct token access the data
+@Controller('vehicles')
 @UseGuards(AuthGuard('jwt'))
 export class VehicleController {
   constructor(
@@ -44,9 +44,9 @@ export class VehicleController {
     return this.vehicleRepository.getVehicles();
   }
 
+  // Interceptor to handle file upload and set file size/quantity limits
   @Post('/upload')
   @UsePipes(ValidationPipe)
-  // Interceptor to handle file upload and set file size/quantity limits
   @UseInterceptors(
     FileInterceptor('file', {
       limits: {
@@ -64,9 +64,7 @@ export class VehicleController {
       }
 
       // Uploads the file to s3 storage
-      // It must be avoided, but config/.env stopped working before deadline therefore I am passing strings as well
-      const bucketName =
-        'parkmaster' || process.env.AWS_ACCESS_KEY_ID || s3Settings.bucketName;
+      const bucketName = process.env.BUCKET_NAME || s3Settings.bucketName;
       const image = await this.assetService.uploadFile(file.buffer, bucketName);
 
       // Transforms uploaded file to encoded base64 string to be enable passing it to Plate recognizer

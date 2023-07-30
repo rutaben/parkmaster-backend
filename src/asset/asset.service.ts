@@ -22,6 +22,7 @@ export class AssetService {
     };
 
     const uploadResult = await this.s3.upload(params).promise();
+
     return uploadResult;
   }
 
