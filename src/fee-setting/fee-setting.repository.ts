@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { FeeSetting } from './fee-setting.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -34,12 +38,15 @@ export class FeeSettingRepository extends Repository<FeeSetting> {
     const { feeRate } = updateFeeSetting;
 
     // Accepts id and according to it updates the feeSetting
-
     const feeSetting = await this.feeSettingRepository.findOne({
       where: {
         id: id,
       },
     });
+
+    if (!feeSetting) {
+      throw new NotFoundException('Could not find a fee rate to update');
+    }
 
     feeSetting.feeRate = feeRate;
 

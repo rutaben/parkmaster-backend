@@ -23,7 +23,6 @@ export class AuthService {
   ) {}
 
   // Validates if user exists in the database and returns it
-
   async validateUser(username: string): Promise<any> {
     const user = await this.userRepository.getUserByEmail(username);
     if (user) {
@@ -34,7 +33,6 @@ export class AuthService {
   }
 
   // Performs validations and generates userToken upon signing in
-
   async signIn(signInDto: SignInDto): Promise<UserToken> {
     const user = await this.userRepository.getUserByEmail(signInDto.email);
 
@@ -57,7 +55,6 @@ export class AuthService {
     }
 
     // If user doesn't exist yet, creates a new user and stores salt for pasword hashing and hashed password
-
     const user = new User(signUpDto.email);
     user.salt = await bcrypt.genSalt();
     user.password = await this.hashPassword(signUpDto.password, user.salt);

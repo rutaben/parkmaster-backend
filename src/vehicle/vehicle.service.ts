@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { VehicleRepository } from './vehicle.repository';
 import * as fetch from 'node-fetch';
 import * as FormData from 'form-data';
@@ -35,7 +39,6 @@ export class VehicleService {
     );
 
     // Checks is recognized vehicle is parked, in other case, creates a new one
-
     const parkedVehicle = await this.vehicleRepository.getParkedVehicle(
       plateNumber,
     );
@@ -98,7 +101,9 @@ export class VehicleService {
 
       return await response.json();
     } catch (error) {
-      throw new Error('Failed to recognized vehicle data');
+      throw new InternalServerErrorException(
+        'Failed to recognize vehicle data',
+      );
     }
   }
 
@@ -183,6 +188,12 @@ export class VehicleService {
         weekday: getArrivalWeekday(vehicle.arrival),
       },
     });
+
+    if (!feeSetting) {
+      throw new NotFoundException(
+        'Could not find the fee rate for the vehicle',
+      );
+    }
 
     // Using parseFloat to convert string to number and to preserve numbers after comma
     const feeRate = parseFloat(feeSetting.feeRate);

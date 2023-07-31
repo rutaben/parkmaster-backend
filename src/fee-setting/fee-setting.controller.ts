@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  InternalServerErrorException,
+  Param,
+  Patch,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FeeSetting } from './fee-setting.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -21,10 +29,17 @@ export class FeeSettingController {
   }
 
   @Patch('/:id')
-  updateFeeSetting(
+  async updateFeeSetting(
     @Param('id', new ValidatedNumberPipe()) id: number,
     @Body() updateFeeSettingDto: UpdateFeeSettingDto,
   ): Promise<FeeSetting> {
-    return this.feeSettingRepository.updateFeeSetting(id, updateFeeSettingDto);
+    try {
+      return this.feeSettingRepository.updateFeeSetting(
+        id,
+        updateFeeSettingDto,
+      );
+    } catch (error) {
+      throw new InternalServerErrorException('Could not update a fee rate');
+    }
   }
 }

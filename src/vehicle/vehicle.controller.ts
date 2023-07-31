@@ -67,6 +67,12 @@ export class VehicleController {
       const bucketName = process.env.BUCKET_NAME || s3Settings.bucketName;
       const image = await this.assetService.uploadFile(file.buffer, bucketName);
 
+      if (!image) {
+        throw new InternalServerErrorException(
+          'Could not upload the vehicle image',
+        );
+      }
+
       // Transforms uploaded file to encoded base64 string to be enable passing it to Plate recognizer
       const assetString = await this.assetService.getObjectAsBase64(
         bucketName,
@@ -76,7 +82,9 @@ export class VehicleController {
       const result = await this.vehicleService.uploadVehicle(assetString);
       return result;
     } catch (error) {
-      throw new InternalServerErrorException('Could not read the plates');
+      throw new InternalServerErrorException(
+        'Could not register or checkout the uploaded vehicle',
+      );
     }
   }
 }

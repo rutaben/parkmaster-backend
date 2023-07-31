@@ -1,4 +1,11 @@
-import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  ForbiddenException,
+  NotFoundException,
+  Post,
+  ValidationPipe,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { UserToken } from '../user/user-token';
@@ -10,18 +17,23 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   // Returns userToken after successful sign in which is then set in local storage to ensure only registered person can access the data
-
   @Post('/sign-in')
   async signIn(@Body(ValidationPipe) signInDto: SignInDto): Promise<UserToken> {
     try {
       return this.authService.signIn(signInDto);
-    } catch (e) {}
+    } catch (e) {
+      throw new ForbiddenException('Sign in failed');
+    }
   }
 
   @Post('/sign-up')
   async signUp(@Body(ValidationPipe) signUpDto: SignUpDto): Promise<User> {
     try {
       return this.authService.signUp(signUpDto);
-    } catch (e) {}
+    } catch (e) {
+      throw new NotFoundException(
+        'Sign Up failed. Could not create a new account',
+      );
+    }
   }
 }

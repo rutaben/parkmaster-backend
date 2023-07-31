@@ -12,7 +12,6 @@ export class FeeSettingService implements OnModuleInit {
   ) {}
 
   // Uses initial feeSettings data to create default parking rates on initialization
-
   async onModuleInit() {
     for (const feeSettingDto of feeSettingDtos) {
       let feeSetting = await this.feeSettingRepository.findOne({
