@@ -9,7 +9,6 @@ import {
   UploadedFile,
   UseGuards,
 } from '@nestjs/common';
-import * as config from 'config';
 import { AuthGuard } from '@nestjs/passport';
 import { VehicleService } from './vehicle.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -17,15 +16,6 @@ import { AssetService } from 'src/asset/asset.service';
 import { Vehicle } from './vehicle.entity';
 import { VehicleRepository } from './vehicle.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-
-export type s3SettingsProps = {
-  accessKeyId: string;
-  secretAccessKey: string;
-  region: string;
-  bucketName: string;
-};
-
-const s3Settings: s3SettingsProps = config.get('s3');
 
 // Jwt authentication guard ensures the user with correct token access the data
 @Controller('vehicles')
@@ -64,7 +54,7 @@ export class VehicleController {
       }
 
       // Uploads the file to s3 storage
-      const bucketName = process.env.BUCKET_NAME || s3Settings.bucketName;
+      const bucketName = process.env.BUCKET_NAME;
       const image = await this.assetService.uploadFile(file.buffer, bucketName);
 
       if (!image) {
