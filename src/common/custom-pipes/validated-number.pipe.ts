@@ -8,7 +8,7 @@ export class ValidatedNumberPipe implements PipeTransform<string, number> {
     const val = Number(value);
     const maxInt = 2147483647;
     if (isNaN(val) || val > maxInt || val < 0) {
-      throw new BadRequestException('VALIDATION.FAILED');
+      throw new BadRequestException('Validation has failed');
     }
     return val;
   }
