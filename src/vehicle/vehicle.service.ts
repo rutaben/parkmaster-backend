@@ -93,7 +93,7 @@ export class VehicleService {
         {
           method: 'POST',
           headers: {
-            Authorization: 'Token 3b72599f3620adb6050996615b373da11ffef5a6',
+            Authorization: `Token ${process.env.PLATE_RECOGNIZER_TOKEN}`,
           },
           body: body,
         },
@@ -109,9 +109,9 @@ export class VehicleService {
 
   // Method to checkOut vehicle from the parking lot when it is leaving
   private async checkOutVehicle(plateNumber: string): Promise<Vehicle> {
-    const vehicle = await this.vehicleRepository.getVehicleByPlateNumber(
-      plateNumber,
-    );
+    // Checkouts incorrect vehicle
+
+    const vehicle = await this.vehicleRepository.getParkedVehicle(plateNumber);
 
     // Departure time is current time
     vehicle.departure = new Date();

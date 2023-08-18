@@ -29,12 +29,4 @@ export class VehicleRepository extends Repository<Vehicle> {
       },
     });
   }
-
-  async getVehicleByPlateNumber(plateNumber: string): Promise<Vehicle> {
-    return await this.vehicleRepository.findOne({
-      where: {
-        plateNumber: plateNumber,
-      },
-    });
-  }
 }
